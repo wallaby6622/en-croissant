@@ -60,7 +60,7 @@ import AddPuzzle from "./AddPuzzle";
 import PuzzleBoard from "./PuzzleBoard";
 import { progressiveRange, puzzleMoveIndex, validPuzzle } from "./puzzleTraining";
 
-function Puzzles({ id }: { id: string }) {
+function Puzzles({ id, onOpenBooks }: { id: string; onOpenBooks?: () => void }) {
   const { t } = useTranslation();
   const store = useContext(TreeStateContext)!;
   const setFen = useStore(store, (s) => s.setFen);
@@ -385,6 +385,11 @@ function Puzzles({ id }: { id: string }) {
             overflow: "hidden",
           }}
         >
+          {onOpenBooks && (
+            <Button variant="light" mb="sm" onClick={onOpenBooks}>
+              {t("Book.Title", { defaultValue: "Book puzzle training" })}
+            </Button>
+          )}
           <AddPuzzle
             puzzleDbs={puzzleDbs}
             opened={addOpened}
