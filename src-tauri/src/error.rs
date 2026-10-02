@@ -43,6 +43,9 @@ pub enum Error {
     Diesel(Box<diesel::result::Error>),
 
     #[error(transparent)]
+    DieselConnection(#[from] diesel::ConnectionError),
+
+    #[error(transparent)]
     R2d2(Box<diesel::r2d2::PoolError>),
 
     #[error(transparent)]
