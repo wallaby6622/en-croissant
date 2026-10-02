@@ -457,6 +457,7 @@
     "Puzzle.GetAHint": "Hinweis erhalten",
     "Puzzle.HideRating": "Wertung verbergen",
     "Puzzle.HideRating.Desc": "",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "Sofort zum nächsten Puzzle springen",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "",
     "Puzzle.NewPuzzle": "Neues Puzzle",

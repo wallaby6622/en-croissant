@@ -471,6 +471,7 @@
     "Puzzle.GetAHint": "Get a Hint",
     "Puzzle.HideRating": "",
     "Puzzle.HideRating.Desc": "",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "Jump to next puzzle immediately",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "",
     "Puzzle.NewPuzzle": "",

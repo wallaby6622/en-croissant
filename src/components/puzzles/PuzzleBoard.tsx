@@ -1,18 +1,18 @@
 import { Box } from "@mantine/core";
 import { useElementSize, useForceUpdate } from "@mantine/hooks";
-import { type Move, makeUci, type NormalMove, parseSquare } from "chessops";
+import { type Move, type NormalMove, parseSquare } from "chessops";
 import { chessgroundDests, chessgroundMove } from "chessops/compat";
 import { parseFen } from "chessops/fen";
-import equal from "fast-deep-equal";
 import { useAtom, useAtomValue } from "jotai";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useStore } from "zustand";
 import { Chessground } from "@/chessground/Chessground";
 import { jumpToNextPuzzleAtom, moveHighlightAtom, showCoordinatesAtom } from "@/state/atoms";
 import classes from "@/styles/Chessboard.module.css";
 import { positionFromFen } from "@/utils/chessops";
 import type { Completion, Puzzle } from "@/utils/puzzles";
-import { getNodeAtPath, treeIteratorMainLine } from "@/utils/treeReducer";
+import { getNodeAtPath } from "@/utils/treeReducer";
+import { puzzleMoveIndex, puzzleMoveResult } from "./puzzleTraining";
 import PromotionModal from "../boards/PromotionModal";
 import { TreeStateContext } from "../common/TreeStateContext";
 
@@ -22,12 +22,14 @@ function PuzzleBoard({
   changeCompletion,
   generatePuzzle,
   db,
+  disabled = false,
 }: {
   puzzles: Puzzle[];
   currentPuzzle: number;
-  changeCompletion: (completion: Completion) => Promise<void>;
+  changeCompletion: (completion: Completion) => void;
   generatePuzzle: (db: string) => Promise<void>;
   db: string | null;
+  disabled?: boolean;
 }) {
   const store = useContext(TreeStateContext)!;
   const root = useStore(store, (s) => s.root);
@@ -45,22 +47,19 @@ function PuzzleBoard({
   if (puzzles.length > 0) {
     puzzle = puzzles[currentPuzzle];
   }
-  const [ended, setEnded] = useState(false);
+  const checking = useRef(false);
 
   const [pos] = positionFromFen(currentNode.fen);
 
-  const treeIter = treeIteratorMainLine(root);
-  treeIter.next();
-  let currentMove = 0;
-  if (puzzle) {
-    for (const { node } of treeIter) {
-      if (node.move && makeUci(node.move) === puzzle.moves[currentMove]) {
-        currentMove++;
-      } else {
-        break;
-      }
-    }
-  }
+  const currentMove = puzzle ? puzzleMoveIndex(root, position, puzzle.moves) : null;
+  const canMove =
+    !disabled &&
+    puzzle &&
+    currentMove !== null &&
+    currentMove > 0 &&
+    currentMove % 2 === 1 &&
+    currentMove < puzzle.moves.length &&
+    puzzle.completion !== "correct";
   const orientation = puzzle?.fen
     ? parseFen(puzzle.fen).unwrap().turn === "white"
       ? "black"
@@ -73,44 +72,24 @@ function PuzzleBoard({
   const showCoordinates = useAtomValue(showCoordinatesAtom);
 
   async function checkMove(move: Move) {
-    if (!pos) return;
-    if (!puzzle) return;
-
-    const newPos = pos.clone();
-    const uci = makeUci(move);
-    newPos.play(move);
-
-    if (puzzle.moves[currentMove] === uci || newPos.isCheckmate()) {
-      if (currentMove === puzzle.moves.length - 1) {
-        if (puzzle.completion !== "incorrect") {
-          await changeCompletion("correct");
+    if (!pos || !puzzle || !canMove || currentMove === null || checking.current) return;
+    checking.current = true;
+    try {
+      const result = puzzleMoveResult(currentNode.fen, puzzle.moves, currentMove, move);
+      if (result) {
+        makeMoves({ payload: result.moves, mainline: true, changeHeaders: false });
+        if (result.complete) {
+          changeCompletion("correct");
+          if (db && jumpToNextPuzzleImmediately) await generatePuzzle(db);
         }
-        setEnded(false);
-
-        if (db && jumpToNextPuzzleImmediately) {
-          await generatePuzzle(db);
-          reset();
-          return;
-        }
+      } else {
+        makeMove({ payload: move, changePosition: false, changeHeaders: false });
+        changeCompletion("incorrect");
       }
-      const newMoves = puzzle.moves.slice(currentMove, currentMove + 2);
-      makeMoves({
-        payload: newMoves,
-        mainline: true,
-        changeHeaders: false,
-      });
-    } else {
-      makeMove({
-        payload: move,
-        changePosition: false,
-        changeHeaders: false,
-      });
-      if (!ended) {
-        await changeCompletion("incorrect");
-      }
-      setEnded(true);
+      reset();
+    } finally {
+      checking.current = false;
     }
-    reset();
   }
 
   const { ref: parentRef, height: parentHeight } = useElementSize();
@@ -149,12 +128,7 @@ function PuzzleBoard({
           }}
           movable={{
             free: false,
-            color:
-              puzzle &&
-              equal(position, Array(currentMove).fill(0)) &&
-              (puzzle.completion === "incomplete" || puzzle.completion === "incorrect")
-                ? turn
-                : undefined,
+            color: canMove ? turn : undefined,
             dests: dests,
             events: {
               after: (orig, dest) => {

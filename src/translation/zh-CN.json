@@ -471,6 +471,7 @@
     "Puzzle.GetAHint": "获取提示",
     "Puzzle.HideRating": "隐藏等级分",
     "Puzzle.HideRating.Desc": "解题前隐藏",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "立即跳转至下一个谜题",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "解题后自动前进",
     "Puzzle.NewPuzzle": "新谜题",

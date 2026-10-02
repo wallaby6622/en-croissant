@@ -460,6 +460,7 @@
     "Puzzle.GetAHint": "Obter uma dica",
     "Puzzle.HideRating": "",
     "Puzzle.HideRating.Desc": "",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "",
     "Puzzle.NewPuzzle": "",

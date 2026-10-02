@@ -460,6 +460,7 @@
     "Puzzle.GetAHint": "Ottieni un suggerimento",
     "Puzzle.HideRating": "Nascondi punteggio",
     "Puzzle.HideRating.Desc": "Nascondi fino alla risoluzione",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "Vai immediatamente al puzzle successivo",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "Avanza automaticamente dopo la risoluzione",
     "Puzzle.NewPuzzle": "Nuovo puzzle",

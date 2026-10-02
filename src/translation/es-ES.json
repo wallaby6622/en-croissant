@@ -460,6 +460,7 @@
     "Puzzle.GetAHint": "Obtener una pista",
     "Puzzle.HideRating": "",
     "Puzzle.HideRating.Desc": "",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "Saltar al siguiente puzzle inmediatamente",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "",
     "Puzzle.NewPuzzle": "",

@@ -463,6 +463,7 @@
     "Puzzle.GetAHint": "Uzyskaj podpowiedź",
     "Puzzle.HideRating": "",
     "Puzzle.HideRating.Desc": "",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "",
     "Puzzle.NewPuzzle": "",

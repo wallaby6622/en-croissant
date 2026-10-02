@@ -457,6 +457,7 @@
     "Puzzle.GetAHint": "İpucu Al",
     "Puzzle.HideRating": "",
     "Puzzle.HideRating.Desc": "",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "Sonraki bulmayaca direkt geç",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "",
     "Puzzle.NewPuzzle": "",

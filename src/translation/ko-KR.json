@@ -469,6 +469,7 @@
     "Puzzle.GetAHint": "힌트 받기",
     "Puzzle.HideRating": "레이팅 숨기기",
     "Puzzle.HideRating.Desc": "풀기 전까지는 레이팅을 표시하지 않습니다",
+    "Puzzle.InvalidData": "",
     "Puzzle.JumpToNextPuzzleImmediately": "즉시 다음 퍼즐로 이동",
     "Puzzle.JumpToNextPuzzleImmediately.Desc": "푼 즉시 다음 퍼즐로 이동합니다",
     "Puzzle.NewPuzzle": "새 퍼즐",

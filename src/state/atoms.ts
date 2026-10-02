@@ -440,7 +440,7 @@ const pgnOptionsFamily = atomFamily((_tab: string) =>
 );
 export const currentPgnOptionsAtom = tabValue(pgnOptionsFamily);
 
-const currentPuzzleFamily = atomFamily((_tab: string) => atom(0));
+export const currentPuzzleFamily = atomFamily((_tab: string) => atom(0));
 export const currentPuzzleAtom = tabValue(currentPuzzleFamily);
 
 // Game

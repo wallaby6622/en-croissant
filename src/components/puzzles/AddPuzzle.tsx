@@ -65,13 +65,25 @@ function PuzzleDbCard({
 }) {
   const { t } = useTranslation();
   const [inProgress, setInProgress] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [progressKey, setProgressKey] = useState(0);
 
   async function downloadDatabase(id: number, url: string, name: string) {
     setInProgress(true);
-    const puzzlesDir = await getPuzzlesDir();
-    const path = await resolve(puzzlesDir, `${name}.db3`);
-    await commands.downloadFile(`puzzle_db_${id}`, url, path, null, null, null);
-    setPuzzleDbs(await getPuzzleDatabases());
+    setError(null);
+    try {
+      const puzzlesDir = await getPuzzlesDir();
+      const path = await resolve(puzzlesDir, `${name}.db3`);
+      const result = await commands.downloadFile(`puzzle_db_${id}`, url, path, null, null, null);
+      if (result.status === "error") throw new Error(result.error);
+      setPuzzleDbs(await getPuzzleDatabases());
+    } catch (reason) {
+      setError(String(reason));
+      await commands.clearProgress(`puzzle_db_${id}`).catch(() => {});
+      setProgressKey((value) => value + 1);
+    } finally {
+      setInProgress(false);
+    }
   }
 
   return (
@@ -103,7 +115,13 @@ function PuzzleDbCard({
               <Text size="xs">{formatNumber(puzzleDb.puzzleCount)}</Text>
             </Stack>
           </Group>
+          {error && (
+            <Alert color="red" title={t("Common.Error")} mb="sm">
+              {error}
+            </Alert>
+          )}
           <ProgressButton
+            key={progressKey}
             id={`puzzle_db_${databaseId}`}
             initInstalled={initInstalled}
             labels={{
