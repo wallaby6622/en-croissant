@@ -1,13 +1,4 @@
-import {
-  ActionIcon,
-  Autocomplete,
-  createTheme,
-  Input,
-  localStorageColorSchemeManager,
-  MantineProvider,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { getMatches } from "@tauri-apps/plugin-cli";
@@ -49,12 +40,9 @@ import "mantine-datatable/styles.css";
 
 import "@/styles/global.css";
 
+import { colorSchemeManager, createAppTheme } from "./styles/appTheme";
 import { commands } from "./bindings";
 import { openFile } from "./utils/files";
-
-const colorSchemeManager = localStorageColorSchemeManager({
-  key: "mantine-color-scheme",
-});
 
 import { getVersion } from "@tauri-apps/api/app";
 import { ask } from "@tauri-apps/plugin-dialog";
@@ -238,40 +226,7 @@ export default function App() {
     };
   }, [setDatabaseConversionState]);
 
-  const theme = createTheme({
-    primaryColor,
-    colors: {
-      dark: [
-        "#C1C2C5",
-        "#A6A7AB",
-        "#909296",
-        "#5c5f66",
-        "#373A40",
-        "#2C2E33",
-        "#25262b",
-        "#1A1B1E",
-        "#141517",
-        "#101113",
-      ],
-    },
-    components: {
-      ActionIcon: ActionIcon.extend({
-        defaultProps: {
-          variant: "transparent",
-          color: "gray",
-        },
-      }),
-      TextInput: TextInput.extend({ defaultProps: { spellCheck } }),
-      Autocomplete: Autocomplete.extend({ defaultProps: { spellCheck } }),
-      Textarea: Textarea.extend({ defaultProps: { spellCheck } }),
-      Input: Input.extend({
-        defaultProps: {
-          // @ts-expect-error - Solve mantine input type check
-          spellCheck,
-        },
-      }),
-    },
-  });
+  const theme = createAppTheme(primaryColor, spellCheck);
 
   return (
     <DndProvider backend={HTML5Backend}>

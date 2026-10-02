@@ -1,6 +1,7 @@
 use log::info;
 use serde::{Deserialize, Serialize};
 use shakmaty::{fen::Fen, san::San, Chess, EnPassantMode, Position, Setup};
+use std::collections::HashMap;
 
 use lazy_static::lazy_static;
 use specta::Type;
@@ -43,6 +44,41 @@ const FISCHER_RANDOM_DATA: &[u8] = include_bytes!("../data/frc.tsv");
 struct FischerRandomRecord {
     name: String,
     fen: String,
+}
+
+// Opening identity excludes move clocks, which vary across transpositions.
+fn opening_position_key(fen: &str) -> Option<String> {
+    let parsed: Fen = fen.parse().ok()?;
+    Some(
+        parsed
+            .to_string()
+            .split_whitespace()
+            .take(4)
+            .collect::<Vec<_>>()
+            .join(" "),
+    )
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_graph_opening_names(fens: Vec<String>) -> Vec<Option<String>> {
+    fens.iter()
+        .map(|fen| opening_position_key(fen).and_then(|key| GRAPH_OPENINGS.get(&key).cloned()))
+        .collect()
+}
+
+lazy_static! {
+    static ref GRAPH_OPENINGS: HashMap<String, String> = {
+        let mut names = HashMap::new();
+        for opening in OPENINGS.iter().filter(|opening| opening.pgn.is_some()) {
+            if let Some(key) =
+                opening_position_key(&Fen::from_setup(opening.setup.clone()).to_string())
+            {
+                names.entry(key).or_insert_with(|| opening.name.clone());
+            }
+        }
+        names
+    };
 }
 
 #[tauri::command]
@@ -171,6 +207,26 @@ lazy_static! {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn graph_opening_names_ignore_clocks_and_preserve_unknowns() {
+        let fen = "rnbqkbnr/ppp1pppp/8/3p4/3P1B2/8/PPP1PPPP/RN1QKBNR b KQkq - 1 2";
+        let names = get_graph_opening_names(vec![
+            fen.into(),
+            fen.replace("1 2", "17 25"),
+            "invalid".into(),
+        ]);
+        assert_eq!(
+            names[0].as_deref(),
+            Some("Queen's Pawn Game: Accelerated London System")
+        );
+        assert_eq!(names[0], names[1]);
+        assert_eq!(names[2], None);
+        assert_eq!(
+            get_graph_opening_names(vec![Fen::default().to_string()]),
+            vec![None]
+        );
+    }
 
     #[test]
     fn test_get_opening() {

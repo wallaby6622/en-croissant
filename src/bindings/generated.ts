@@ -88,6 +88,9 @@ async searchOpeningName(query: string) : Promise<Result<OutOpening[], string>> {
     else return { status: "error", error: e  as any };
 }
 },
+async getGraphOpeningNames(fens: string[]) : Promise<(string | null)[]> {
+    return await TAURI_INVOKE("get_graph_opening_names", { fens });
+},
 async getOpeningFromFen(fen: string) : Promise<Result<string, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("get_opening_from_fen", { fen }) };

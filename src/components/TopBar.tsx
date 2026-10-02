@@ -77,7 +77,7 @@ type MenuGroup = {
   options: MenuAction[];
 };
 
-function TopBar({ menuActions }: { menuActions: MenuGroup[] }) {
+function TopBar({ menuActions = [], title }: { menuActions?: MenuGroup[]; title?: string }) {
   const colorScheme = useColorScheme();
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -105,6 +105,11 @@ function TopBar({ menuActions }: { menuActions: MenuGroup[] }) {
           <Box h="1.25rem" w="1.25rem">
             <Image src="/logo.png" fit="fill" />
           </Box>
+          {title && (
+            <Text size="sm" truncate data-tauri-drag-region>
+              {title}
+            </Text>
+          )}
           <Group gap={0}>
             {menuActions.map((action) => (
               <Menu

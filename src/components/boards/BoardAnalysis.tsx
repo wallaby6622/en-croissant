@@ -2,6 +2,7 @@ import { Paper, Portal, Stack, Tabs } from "@mantine/core";
 import { useHotkeys, useToggle } from "@mantine/hooks";
 import {
   IconDatabase,
+  IconSitemap,
   IconInfoCircle,
   IconNotes,
   IconTargetArrow,
@@ -11,7 +12,7 @@ import { useLoaderData } from "@tanstack/react-router";
 import { writeTextFile } from "@tauri-apps/plugin-fs";
 import type { Piece } from "chessops";
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useStore } from "zustand";
 import {
@@ -41,6 +42,9 @@ import Board from "./Board";
 import BoardControls from "./BoardControls";
 import EditingCard from "./EditingCard";
 import EvalListener from "./EvalListener";
+import { useGraphWindow } from "../panels/graph/useGraphWindow";
+
+const GraphPanel = lazy(() => import("../panels/graph/GraphPanel"));
 
 function BoardAnalysis() {
   const { t } = useTranslation();
@@ -55,6 +59,7 @@ function BoardAnalysis() {
   const boardRef = useRef(null);
 
   const store = useContext(TreeStateContext)!;
+  const graphWindow = useGraphWindow(store);
 
   const dirty = useStore(store, (s) => s.dirty);
 
@@ -191,7 +196,9 @@ function BoardAnalysis() {
           <Tabs
             w="100%"
             h="100%"
-            value={currentTabSelected}
+            value={
+              graphWindow.isOpen && currentTabSelected === "graph" ? "analysis" : currentTabSelected
+            }
             onChange={(v) => setCurrentTabSelected(v || "info")}
             keepMounted={false}
             activateTabWithKeyboard={false}
@@ -225,6 +232,11 @@ function BoardAnalysis() {
               <Tabs.Tab value="annotate" leftSection={<IconNotes size="1rem" />}>
                 {t("Board.Tabs.Annotate")}
               </Tabs.Tab>
+              {!graphWindow.isOpen && (
+                <Tabs.Tab value="graph" leftSection={<IconSitemap size="1rem" />}>
+                  {t("Board.Tabs.Graph")}
+                </Tabs.Tab>
+              )}
               <Tabs.Tab value="info" leftSection={<IconInfoCircle size="1rem" />}>
                 {t("Board.Tabs.Info")}
               </Tabs.Tab>
@@ -232,6 +244,16 @@ function BoardAnalysis() {
             {isRepertoire && (
               <Tabs.Panel value="practice" flex={1} style={{ overflowY: "hidden" }}>
                 <PracticePanel />
+              </Tabs.Panel>
+            )}
+            {!graphWindow.isOpen && (
+              <Tabs.Panel value="graph" flex={1} style={{ minHeight: 0, overflow: "hidden" }}>
+                <Suspense fallback={null}>
+                  <GraphPanel
+                    onOpenWindow={() => void graphWindow.open(t("Board.Tabs.Graph"))}
+                    windowError={graphWindow.error}
+                  />
+                </Suspense>
               </Tabs.Panel>
             )}
             <Tabs.Panel value="info" flex={1} style={{ overflowY: "hidden" }}>

@@ -67,7 +67,8 @@ use crate::{
     },
     fs::{download_file, file_exists, get_file_metadata},
     opening::{
-        get_opening_from_fen, get_opening_from_fens, get_opening_from_name, search_opening_name,
+        get_graph_opening_names, get_opening_from_fen, get_opening_from_fens,
+        get_opening_from_name, search_opening_name,
     },
 };
 use std::sync::atomic::AtomicBool;
@@ -120,6 +121,7 @@ fn main() {
             memory_size,
             get_puzzle,
             search_opening_name,
+            get_graph_opening_names,
             get_opening_from_fen,
             get_opening_from_fens,
             get_opening_from_name,
@@ -243,6 +245,15 @@ fn main() {
             log::info!("Finished rust initialization");
 
             Ok(())
+        })
+        .on_window_event(|window, event| {
+            if window.label() == "main" && matches!(event, tauri::WindowEvent::Destroyed) {
+                for (label, graph) in window.app_handle().webview_windows() {
+                    if label.starts_with("graph-") {
+                        let _ = graph.destroy();
+                    }
+                }
+            }
         })
         .manage(AppState::default())
         .build(tauri::generate_context!())

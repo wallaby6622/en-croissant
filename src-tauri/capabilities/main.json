@@ -50,6 +50,9 @@
                 "https://tablebase.lichess.org/**",
                 "https://www.chessdb.cn/**"
             ]
-        }
+        },
+        "core:webview:allow-create-webview-window",
+        "core:window:allow-set-focus",
+        "core:window:allow-destroy"
     ]
 }

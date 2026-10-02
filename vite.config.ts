@@ -36,6 +36,12 @@ export default defineConfig({
         },
     },
     build: {
+        rolldownOptions: {
+            input: {
+                main: resolve(import.meta.dirname, "index.html"),
+                graph: resolve(import.meta.dirname, "graph.html"),
+            },
+        },
         minify: isDebug ? false : "esbuild",
         sourcemap: isDebug ? "inline" : false,
         target: process.env.TAURI_ENV_PLATFORM == "windows" ? "chrome105" : "safari13",

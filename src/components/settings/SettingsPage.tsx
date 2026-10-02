@@ -20,6 +20,7 @@ import {
   IconFlag,
   IconFolder,
   IconKeyboard,
+  IconLicense,
   IconMouse,
   IconReload,
   IconSearch,
@@ -74,6 +75,7 @@ import SettingsSwitch from "./SettingsSwitch";
 import SoundSelect from "./SoundSelect";
 import ThemeButton from "./ThemeButton";
 import VolumeSlider from "./VolumeSlider";
+import ThirdPartyLicenses from "./ThirdPartyLicenses";
 
 type SettingCategory =
   | "board"
@@ -843,10 +845,16 @@ export default function Page() {
             <Tabs.Tab value="privacy" leftSection={<IconShield size="1rem" />}>
               {t("Settings.Privacy")}
             </Tabs.Tab>
+            <Tabs.Tab value="licenses" leftSection={<IconLicense size="1rem" />}>
+              {t("Settings.Licenses")}
+            </Tabs.Tab>
           </Tabs.List>
           <Stack flex={1} px="md">
             <ScrollArea>
               <Card withBorder p="lg" className={classes.card} w="100%">
+                <Tabs.Panel value="licenses">
+                  <ThirdPartyLicenses />
+                </Tabs.Panel>
                 <Tabs.Panel value="board">
                   <Text size="lg" fw={500} className={classes.title}>
                     {t("Settings.Board")}
