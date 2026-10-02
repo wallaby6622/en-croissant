@@ -80,6 +80,30 @@ async getPuzzle(file: string, minRating: number, maxRating: number, theme: strin
     else return { status: "error", error: e  as any };
 }
 },
+async importBookPuzzles(file: string) : Promise<Result<string, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("import_book_puzzles", { file }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async loadBookTraining() : Promise<Result<string, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("load_book_training") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async saveBookTraining(revision: number, data: string) : Promise<Result<number, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("save_book_training", { revision, data }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async searchOpeningName(query: string) : Promise<Result<OutOpening[], string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("search_opening_name", { query }) };

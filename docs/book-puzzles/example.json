@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "book": {
+    "id": "en-croissant-demo-v1",
+    "title": "Book Puzzle Demo (original examples)",
+    "edition": "1"
+  },
+  "problems": [
+    {
+      "id": "mate-1",
+      "order": 1,
+      "chapter": "Queen endings",
+      "page": "1",
+      "answerPage": "3",
+      "number": "1",
+      "fen": "7k/5K2/6Q1/8/8/8/8/8 w - - 0 1",
+      "prompt": "Find the book's mating move.",
+      "examPrompt": "Find the best move.",
+      "hints": ["Move the queen next to the king, protected by your own king."],
+      "explanation": "Qg7# is the registered book answer. Other mates are not accepted unless explicitly registered.",
+      "themes": ["mateIn1"],
+      "solution": [{ "uci": "g6g7", "comment": "Checkmate." }]
+    },
+    {
+      "id": "opening-1",
+      "order": 2,
+      "chapter": "Move sequence demo",
+      "page": "2",
+      "answerPage": "3",
+      "number": "2",
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "prompt": "Play 1.e4 and, after ...e5, develop the king's knight.",
+      "examPrompt": "Find the registered main-line continuation.",
+      "hints": ["The sequence is e4, e5, Nf3."],
+      "explanation": "This original example demonstrates a multi-move solution and automatic replies; it is not a tactical assessment.",
+      "themes": [],
+      "solution": [
+        { "uci": "e2e4", "children": [{ "uci": "e7e5", "children": [{ "uci": "g1f3" }] }] }
+      ]
+    }
+  ]
+}

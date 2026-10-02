@@ -3,6 +3,8 @@
     windows_subsystem = "windows"
 )]
 
+mod book_puzzles;
+use book_puzzles::{import_book_puzzles, load_book_training, save_book_training};
 mod chess;
 mod db;
 mod engine;
@@ -120,6 +122,9 @@ fn main() {
             get_engine_logs,
             memory_size,
             get_puzzle,
+            import_book_puzzles,
+            load_book_training,
+            save_book_training,
             search_opening_name,
             get_graph_opening_names,
             get_opening_from_fen,
