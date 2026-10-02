@@ -57,6 +57,7 @@ import GameNotation from "../common/GameNotation";
 import MoveControls from "../common/MoveControls";
 import { TreeStateContext } from "../common/TreeStateContext";
 import AddPuzzle from "./AddPuzzle";
+import BookTrainingEntry from "./books/BookTrainingEntry";
 import PuzzleBoard from "./PuzzleBoard";
 import { progressiveRange, puzzleMoveIndex, validPuzzle } from "./puzzleTraining";
 
@@ -385,11 +386,7 @@ function Puzzles({ id, onOpenBooks }: { id: string; onOpenBooks?: () => void }) 
             overflow: "hidden",
           }}
         >
-          {onOpenBooks && (
-            <Button variant="light" mb="sm" onClick={onOpenBooks}>
-              {t("Book.Title", { defaultValue: "Book puzzle training" })}
-            </Button>
-          )}
+          {onOpenBooks && <BookTrainingEntry onClick={onOpenBooks} />}
           <AddPuzzle
             puzzleDbs={puzzleDbs}
             opened={addOpened}
